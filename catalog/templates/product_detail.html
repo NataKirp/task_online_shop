@@ -1,0 +1,22 @@
+{% extends 'home.html' %}
+{% load my_tags %}
+{% block content %}
+<div class="card mb-3 col-xl-8 mx-auto">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img src="{{ product.image | media_filter }}" class="card-img-top" alt="Изображение отсутствует">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h4 class="card-title">{{ product.name }}</h4>
+                <h5 class="card-title">Описание</h5>
+                <p class="card-text">{{ product.description }}</p>
+                <h5 class="card-title">Характеристики</h5>
+                <p class="card-text">Категория: {{ product.category }}</p>
+                <h1 class="card-title pricing-card-title">{{ product.price }} ₽</h1>
+                <button type="button" class="btn btn-lg btn-block btn-outline-primary">Купить</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
