@@ -1,83 +1,44 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Skystore</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-
-
-</head>
-<body>
-<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-    <h5 class="my-0 mr-md-auto font-weight-normal">Skystore</h5>
-    <nav class="ms-5">
-        <a class="p-2 btn btn-outline-primary" href="/">Каталог</a>
-        <a class="p-2 btn btn-outline-primary" href="/contacts/">Контакты</a>
-    </nav>
-</div>
-
-<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <h1 class="display-4">Skystore</h1>
-    <p class="lead">Skystore - это отличный вариант хранения ваших плагинов и примеров кода, который вы бы хотели
-        продать</p>
-</div>
+{% extends 'base.html' %}
+{% load my_tags %}
+{% block content %}
 
 <div class="container">
-    <div class="row text-center">
-        <div class="col-3">
-            <div class="card mb-4 box-shadow">
-                <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">Удобный сервис рассылок</h4>
+    <div class="row text-center row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for product in products %}
+        <div class="col d-flex">
+            <div class="card w-100 h-100 box-shadow d-flex flex-column pb-3">
+                <div class="card-header p-0" style="height: 200px; overflow: hidden;">
+                    <img src="{{ product.image | media_filter }}"
+                         class="card-img-top w-100 h-100"
+                         style="object-fit: cover;"
+                         alt="Изображение отсутствует">
                 </div>
-                <div class="card-body">
-                    <h1 class="card-title pricing-card-title">$ 140</h1>
-                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>- Неограниченная лицензия</li>
-                        <li>- Поддержка</li>
-                        <li>- Установка на сервер</li>
-                        <li>- Получение обновлений</li>
-                    </ul>
-                    <button type="button" class="btn btn-lg btn-block btn-outline-primary">Купить</button>
+                <div class="card-body d-flex flex-column justify-content-between p-3">
+                    <div class="d-flex flex-column gap-1">
+                        <h5 class="card-title m-0 d-flex align-items-center justify-content-center"
+                            style="height: 4.8em; line-height: 1.2em; overflow: hidden;">
+                            {{ product.name }}
+                        </h5>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
+                <div class="mt-2">
+                    <h6 class="text-muted m-0 mb-1">Описание</h6>
+                    <div style="min-height: 70px;" class="d-flex align-items-center justify-content-center">
+                        <p class="card-text m-0 small text-secondary">
+                            {{ product.description|truncatechars:100 }}
+                        </p>
+                    </div>
+                </div>
+                <div class="px-3 mt-auto">
+                    <h2 class="card-title pricing-card-title mb-2">{{ product.price }} ₽</h2>
+                    <a class="btn btn-lg btn-block btn-success w-100"
+                       href="{% url 'catalog:product_detail' product.pk %}"
+                       role="button">Подробнее</a>
 
-    <footer class="pt-4 my-md-5 pt-md-5 border-top">
-        <div class="row">
-            <div class="col-12 col-md">
-                SkyStore
-                <small class="d-block mb-3 text-muted">&copy; 2023</small>
-            </div>
-            <div class="col-6 col-md">
-                <h5>Категории</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Рассылки</a></li>
-                    <li><a class="text-muted" href="#">Телеграм боты</a></li>
-                    <li><a class="text-muted" href="#">Полезные утилиты</a></li>
-                    <li><a class="text-muted" href="#">Веб-приложения</a></li>
-                    <li><a class="text-muted" href="#">Микросервисы</a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <h5>Дополнительно</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Мы пишем</a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <h5>О нас</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="/contacts/">Контакты</a></li>
-                </ul>
+                </div>
             </div>
         </div>
-    </footer>
+        {% endfor %}
+    </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
-</body>
-</html>
+{% endblock %}
