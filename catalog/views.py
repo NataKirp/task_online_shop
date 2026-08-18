@@ -11,8 +11,7 @@ class ProductListVieW(ListView):
 
 
 class ContactsTemplateView(TemplateView):
-    template_name ='catalog/contacts.html'
-
+    template_name = 'catalog/contacts.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -31,4 +30,3 @@ class ContactsTemplateView(TemplateView):
 
 class ProductDetailView(DetailView):
     model = Product
-

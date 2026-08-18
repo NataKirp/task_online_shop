@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-success text-white">
+                {% if object %}
+                <h4 class="mb-0">Редактировать статью</h4>
+                {% else %}
+                <h4 class="mb-0">Добавить новую статью</h4>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">Заголовок статьи</label>
+                        <input type="text" name="title" id="{{ form.title.id_for_label }}"
+                               class="form-control" placeholder="Введите заголовок"
+                               value="{{ form.title.value|default_if_none:'' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.content.id_for_label }}" class="form-label">Текст статьи</label>
+                        <textarea name="content" id="{{ form.content.id_for_label }}" rows="5"
+                                  class="form-control" placeholder="Напишите текст здесь...">{{ form.content.value|default_if_none:'' }}</textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="{{ form.preview.id_for_label }}" class="form-label">Изображение</label>
+                        <input type="file" name="preview" id="{{ form.preview.id_for_label }}" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.publication_date.id_for_label }}" class="form-label">Дата публикации</label>
+                        <input type="date" name="publication_date" id="{{ form.publication_date.id_for_label }}"
+                               class="form-control">
+                    </div>
+                    <!-- flex-column: на узких экранах кнопки встанут друг под друга -->
+                    <!-- flex-md-row: на экранах шире планшета они выстроятся в одну строку -->
+                    <div class="d-flex flex-column flex-md gap-2">
+                        <!-- w-100: на мобильных кнопка займет всю ширину. w-md-auto: на ПК ширина по контенту -->
+                        <button type="submit" name="save_draft"
+                                class="btn btn-outline-secondary w-100 w-md-auto flex-fill">
+                            Сохранить черновик
+                        </button>
+                        <button type="submit" name="publish" class="btn btn-success w-100 w-md-auto flex-fill">
+                            Опубликовать
+                        </button>
+                        <a href="{% url 'blog:list' %}" class="btn btn-outline-secondary w-100 w-md-auto flex-fill">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
