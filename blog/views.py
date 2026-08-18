@@ -1,4 +1,4 @@
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -9,8 +9,21 @@ class ArticleListView(ListView):
     model = Article
     context_object_name = 'articles'
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        current_date = timezone.now().date()
+        return queryset.filter(is_published=True, publication_date__lte=current_date).order_by('-publication_date')
+
+
 class ArticleDetailView(DetailView):
     model = Article
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        self.object.views_counter += 1
+        self.object.save()
+        return self.object
+
 
 class ArticleCreateView(CreateView):
     model = Article
@@ -32,10 +45,14 @@ class ArticleCreateView(CreateView):
         article.save()
         return super().form_valid(form)
 
+
 class ArticleUpdateView(UpdateView):
     model = Article
     fields = ("title", "content", "preview", "publication_date")
     success_url = reverse_lazy('blog:list')
+
+    def get_success_url(self):
+        return reverse('blog:article_detail', args=[self.kwargs.get('pk')])
 
 
 class ArticleDeleteView(DeleteView):
