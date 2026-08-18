@@ -1,8 +1,11 @@
+from django.core.mail import send_mail
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+
 from blog.models import Article
+from config import settings
 
 
 class ArticleListView(ListView):
@@ -19,10 +22,22 @@ class ArticleDetailView(DetailView):
     model = Article
 
     def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        self.object.views_counter += 1
-        self.object.save()
-        return self.object
+        article = super().get_object(queryset)
+        article.views_counter += 1
+        article.save()
+
+        if article.views_counter == 100:
+            subject = f'Поздравляем! 100 просмотров!'
+            message = f'Ваша статья "{article.title}" набрала 100 просмотров!'
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[settings.EMAIL_HOST_USER],
+                fail_silently=True
+            )
+
+        return article
 
 
 class ArticleCreateView(CreateView):
