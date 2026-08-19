@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load my_tags %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Статьи нашего блога</h2>
+    <!-- Кнопка перехода на форму создания статьи -->
+    <a href="{% url 'blog:article_create' %}" class="btn btn-success">Написать статью</a>
+</div>
+
+<div class="container">
+    <div class="row text-center row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 g-4">
+        {% for article in articles %}
+        <div class="col d-flex">
+            <div class="card w-100 h-100 box-shadow d-flex flex-column">
+                <div class="card-header p-0" style="height: 200px; overflow: hidden;">
+                    <img src="{{ article.preview | media_filter }}"
+                         class="card-img-top w-100 h-100"
+                         style="object-fit: cover;"
+                         alt="Изображение отсутствует">
+                </div>
+                <div class="card-body d-flex flex-column p-3 pb-0 flex-grow-0 text-start">
+                    <div class="d-flex flex-column gap-1">
+                        <h6 class="card-title m-0 fw-bold text-dark"
+                            style="height: 6.0em; line-height: 1.2em; overflow: hidden;">
+                            {{ article.title }}
+                        </h6>
+                    </div>
+                </div>
+                <div class="px-3 text-start">
+                    <div style="min-height: 70px;" class="d-flex align-items-center justify-content-center">
+                        <p class="card-text m-0 small text-secondary">
+                            {{ article.content|truncatechars:100 }}
+                        </p>
+                    </div>
+                </div>
+                <div class="px-3 mt-auto mt-3">
+                    <a class="btn btn-success w-100"
+                       href="{% url 'blog:article_detail' article.pk %}"
+                       role="button">Подробнее</a>
+                </div>
+                <div class="p-3 bg-light border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <div class="btn-group w-100 w-sm-auto">
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'blog:article_update' article.pk %}"
+                           role="button">Редактировать</a>
+                        <a class="btn btn-sm btn-outline-danger" href="{% url 'blog:article_delete' article.pk %}"
+                           role="button">Удалить</a>
+                    </div>
+                    <small class="text-muted d-inline-flex align-items-center text-nowrap fw-semibold">
+                        {{ article.publication_date|date:"d.m.Y" }}
+                    </small>
+                    <small class="text-body-secondary d-inline-flex align-items-center gap-1 text-nowrap ms-auto bg-white px-2 py-1 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-eye" viewBox="0 0 16 16">
+                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"></path>
+                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"></path>
+                        </svg>
+                        <span>{{ article.views_counter }}</span>
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container d-flex align-items-center justify-content-center">
+    <div class="row w-100 justify-content-center">
+        <div class="col-12 col-md-6 col-lg-5">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="card shadow-sm border-danger">
+                    <div class="card-body text-center p-4">
+                        <div class="text-danger mb-3">
+                            <svg xmlns="http://w3.org" width="48" height="48" fill="currentColor"
+                                 class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+                                <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z"/>
+                                <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0m-.45-1.583a1 1 0 1 1 1.9-.3L8.05 10a1 1 0 0 1-.418-.003z"/>
+                            </svg>
+                        </div>
+                        <h4 class="card-title mb-3 fw-bold text-dark">Удаление статьи</h4>
+                        <p class="card-text text-muted mb-4">
+                            Вы уверены, что хотите удалить статью <br>
+                            <strong class="text-danger">"{{ article.title }}"</strong>?
+                        </p>
+                        <div class="d-flex flex-column-reverse flex-sm-row justify-content-center gap-3">
+                            <a href="{% url 'blog:list' %}" class="btn btn-outline-secondary px-4 py-2 w-100 w-sm-auto"
+                               role="button">Отменить</a>
+                            <button type="submit" class="btn btn-danger  px-4 py-2 w-100 w-sm-auto">Удалить</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

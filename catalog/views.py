@@ -1,28 +1,32 @@
-from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
+from django.views.generic import DetailView, ListView, TemplateView
 
 from catalog.models import Product
 
 
-def home(request):
-    products = Product.objects.all()
-    context = {'products': products}
-    return render(request, 'home.html', context)
+class ProductListVieW(ListView):
+    model = Product
+    template_name = 'catalog/home.html'
+    context_object_name = 'products'
 
 
-def contacts(request):
-    if request.method == 'POST':
+class ContactsTemplateView(TemplateView):
+    template_name = 'catalog/contacts.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def post(self, request, *args, **kwargs):
         name = request.POST.get('name')
         phone = request.POST.get('phone')
         message = request.POST.get('message')
-        print(name)
-        print(phone)
-        print(message)
-        return HttpResponse(f'Спасибо, {name}! Сообщение получено.')
-    return render(request, 'contacts.html')
+        print(f"Новое сообщение! Имя: {name}, Телефон: {phone}. Текст: {message}")
+        context = self.get_context_data(**kwargs)
+        context['success'] = True
+        context['user_name'] = name
+        return render(request, self.template_name, context)
 
 
-def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    context = {'product': product}
-    return render(request, 'product_detail.html', context)
+class ProductDetailView(DetailView):
+    model = Product
