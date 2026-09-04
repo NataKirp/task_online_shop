@@ -3,7 +3,7 @@ import re
 from django import forms
 from django.forms import BooleanField
 
-from catalog.constants import BLACKLIST
+from config.settings import BLACKLIST
 from catalog.models import Product, Category
 
 

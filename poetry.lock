@@ -78,6 +78,46 @@ argon2 = ["argon2-cffi (>=23.1.0)"]
 bcrypt = ["bcrypt (>=4.1.1)"]
 
 [[package]]
+name = "django-countries"
+version = "9.0.0"
+description = "Provides a country field for Django models."
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "django_countries-9.0.0-py3-none-any.whl", hash = "sha256:21fce461733c856355c487d1f24b71338599482505004a0c2e521fd574a59fb1"},
+    {file = "django_countries-9.0.0.tar.gz", hash = "sha256:a993416af08a8a4e6e866d56b71c7ce92351c81a2543da213cd7899917567a42"},
+]
+
+[package.dependencies]
+asgiref = "*"
+typing-extensions = "*"
+
+[package.extras]
+pyuca = ["pyuca"]
+
+[[package]]
+name = "django-phonenumber-field"
+version = "8.5.0"
+description = "An international phone number field for django models."
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "django_phonenumber_field-8.5.0-py3-none-any.whl", hash = "sha256:a6dd71250f7fd0724aad995df01bdb4ac457a65622f120d0d623792fe8283798"},
+    {file = "django_phonenumber_field-8.5.0.tar.gz", hash = "sha256:19c606fda7bb25630c4913f7ac83c1824186ea17e2e4c6dc9aa9373e8f5843c5"},
+]
+
+[package.dependencies]
+Django = ">=4.2"
+phonenumbers = {version = ">=7.0.2", optional = true, markers = "extra == \"phonenumbers\""}
+
+[package.extras]
+babel = ["Babel"]
+phonenumbers = ["phonenumbers (>=7.0.2)"]
+phonenumberslite = ["phonenumberslite (>=7.0.2)"]
+
+[[package]]
 name = "executing"
 version = "2.2.1"
 description = "Get the currently executing AST node of a frame, and other information"
@@ -208,6 +248,18 @@ files = [
 
 [package.dependencies]
 ptyprocess = ">=0.5"
+
+[[package]]
+name = "phonenumbers"
+version = "9.0.38"
+description = "Python version of Google's common library for parsing, formatting, storing and validating international phone numbers."
+optional = false
+python-versions = ">=2.5"
+groups = ["main"]
+files = [
+    {file = "phonenumbers-9.0.38-py2.py3-none-any.whl", hash = "sha256:f3cbeb1a42bf226060c60fc6277f5431755d325eddc23fbf2c72ef7e156113c6"},
+    {file = "phonenumbers-9.0.38.tar.gz", hash = "sha256:6806bebd46638af2fc2609675ea046067a40512eca81bf1446132e2fda29d113"},
+]
 
 [[package]]
 name = "pillow"
@@ -553,6 +605,18 @@ docs = ["myst-parser", "pydata-sphinx-theme", "sphinx"]
 test = ["argcomplete (>=3.0.3)", "mypy (>=1.17.0,<1.19)", "pre-commit", "pytest (>=7.0,<8.2)", "pytest-mock", "pytest-mypy-testing"]
 
 [[package]]
+name = "typing-extensions"
+version = "4.16.0"
+description = "Backported and Experimental Type Hints for Python 3.9+"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "typing_extensions-4.16.0-py3-none-any.whl", hash = "sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"},
+    {file = "typing_extensions-4.16.0.tar.gz", hash = "sha256:dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5"},
+]
+
+[[package]]
 name = "tzdata"
 version = "2026.2"
 description = "Provider of IANA time zone data"
@@ -580,4 +644,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14"
-content-hash = "7e3f4cd5ef6d69e2b5835bea0c12cd5ab18b58aa8242f756a68a2d82fb65a9c4"
+content-hash = "aabbd0db675454d2226d1eaac171664af5dd0d89f894a95564331fc71b3b188f"
