@@ -8,10 +8,7 @@ from catalog.models import Product, Category
 
 
 class ProductForm(forms.ModelForm):
-    class Meta:
-        model = Product
-        fields = ['name', 'description', 'image', 'category', 'price']
-
+    # Дополнительные поля для создания категории прямо в карточке товара
     new_category_name = forms.CharField(
         max_length=50,
         required=False,
@@ -25,9 +22,19 @@ class ProductForm(forms.ModelForm):
         help_text='Введите описание новой категории'
     )
 
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'image', 'category', 'price', 'status']
+        widgets = {
+            'status': forms.Select(attrs={'class': 'form-select'}),
+        }
+
     def __init__(self, *args, **kwargs):
+        # Извлекаем пользователя из переданных аргументов View
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
+        # Автоматически расставляем Bootstrap-классы для всех полей формы
         for field_name, field in self.fields.items():
             if isinstance(field, BooleanField):
                 field.widget.attrs['class'] = 'form-check-input'
@@ -36,11 +43,30 @@ class ProductForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control'
 
+            # Если поле не прошло валидацию, добавляем класс ошибки
             if self.errors and field_name in self.errors:
                 field.widget.attrs['class'] += ' is-invalid'
 
+            # ОГРАНИЧЕНИЯ ДЛЯ ПРОДАВЦА
+            if user and not user.is_superuser and not user.groups.filter(name='Модераторы продуктов').exists():
+                # Если товар уже опубликован
+                if self.instance and self.instance.is_published:
+                    # Фильтруем выпадающий список: продавец не может вернуть опубликованный товар в Черновик
+                    all_choices = Product._meta.get_field('status').choices
+
+                    # Убираем черновик из вариантов выбора, чтобы продавец не мог вручную вернуть товар в драфты
+                    self.fields['status'].choices = [c for c in all_choices if c[0] != 'draft']
+
+                    # Если в базе данных уже сохранен статус 'active',
+                    # мы принудительно выставляем его как текущее выбранное значение в форме (initial)
+                    if self.instance.status == 'active':
+                        self.fields['status'].initial = 'active'
+
     def _validate_blacklist(self, text):
         """Служебный метод для поиска запрещенных слов в тексте."""
+        if not text:
+            return
+
         text_lower = text.lower()
         found_words = []
 
@@ -73,10 +99,16 @@ class ProductForm(forms.ModelForm):
     def clean_image(self):
         image = self.cleaned_data.get('image')
         if image:
-            if image.content_type not in ['image/jpeg', 'image/png']:
-                raise forms.ValidationError('Формат изображения должен быть JPEG или PNG.')
-            if image.size > 5 * 1024 * 1024:
-                raise forms.ValidationError('Размер изображения не должен превышать 5 МБ.')
+            # Проверка, что файл новый (у старого при редактировании формы нет content_type)
+            if hasattr(image, 'content_type'):
+                if image.content_type not in ['image/jpeg', 'image/png']:
+                    raise forms.ValidationError('Формат изображения должен быть JPEG или PNG.')
+                if image.size > 5 * 1024 * 1024:
+                    raise forms.ValidationError('Размер изображения не должен превышать 5 МБ.')
+            else:
+                if image.size > 5 * 1024 * 1024:
+                    raise forms.ValidationError('Размер изображения не должен превышать 5 МБ.')
+
         return image
 
     def clean(self):
