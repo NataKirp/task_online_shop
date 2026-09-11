@@ -14,6 +14,7 @@ class Command(BaseCommand):
                 'delete_product',
             ],
             'Модераторы продуктов': [
+                'view_product',
                 'delete_product',
                 'can_unpublish_product'
             ],

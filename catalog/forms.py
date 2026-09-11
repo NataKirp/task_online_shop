@@ -28,6 +28,7 @@ class ProductForm(forms.ModelForm):
         widgets = {
             'status': forms.Select(attrs={'class': 'form-select'}),
         }
+        exclude = ('owner',)
 
     def __init__(self, *args, **kwargs):
         # Извлекаем пользователя из переданных аргументов View

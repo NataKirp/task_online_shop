@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models import SET_NULL
 
+from users.models import User
+
 
 class Category(models.Model):
     name = models.CharField(
@@ -73,6 +75,11 @@ class Product(models.Model):
         decimal_places=2,
         verbose_name='Цена за покупку',
         help_text='Введите цену'
+    )
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Владелец'
     )
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)

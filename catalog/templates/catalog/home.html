@@ -63,13 +63,13 @@
                         </form>
                         {% endif %}
 
-                        {% if perms.catalog.change_product %}
+                        {% if user == product.owner %}
                         <a class="btn btn-sm btn-outline-secondary flex-fill d-flex align-items-center justify-content-center py-2"
                            href="{% url 'catalog:product_update' product.pk %}"
                            role="button">Редактировать</a>
                         {% endif %}
 
-                        {% if perms.catalog.delete_product %}
+                        {% if user == product.owner %}
                         <a class="btn btn-sm btn-outline-danger flex-fill d-flex align-items-center justify-content-center py-2"
                            href="{% url 'catalog:product_delete' product.pk %}"
                            role="button">Удалить</a>

@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.http import HttpResponseRedirect
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, TemplateView, View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
@@ -47,6 +47,8 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
 
         product = form.save(commit=False)
 
+        product.owner = self.request.user
+
         # Обработка кнопки "Опубликовать товар"
         if 'publish' in self.request.POST:
             product.is_published = True
@@ -54,13 +56,19 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
                 product.status = 'active'
 
         product.save()
-        return HttpResponseRedirect(self.get_success_url())
+        return redirect('catalog:list')
 
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:list')
+
+    def get_object(self, queryset=None):
+        product = super().get_object(queryset)
+        if self.request.user == product.owner or self.request.user.is_superuser:
+            return product
+        raise PermissionDenied("Вы не можете редактировать этот товар, т.к. не являетесь его владельцем.")
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -88,12 +96,23 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
                 product.status = 'active'
 
         product.save()
-        return HttpResponseRedirect(self.get_success_url())
+        return redirect('catalog:list')
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:list')
+
+    def dispatch(self, request, *args, **kwargs):
+        # Сначала находим продукт в базе данных по ID из URL-адреса
+        product = self.get_object()
+
+        is_moderator = request.user.groups.filter(name='Модераторы продуктов').exists()
+
+        if self.request.user != product.owner and not request.user.is_superuser and not is_moderator:
+            raise PermissionDenied("Вы не можете удалить этот товар, т.к. не являетесь его владельцем.")
+
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ProductUnpublishView(PermissionRequiredMixin, View):
