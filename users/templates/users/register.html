@@ -8,5 +8,11 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Регистрация</button>
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        <strong>Пожалуйста, исправьте следующие ошибки:</strong>
+        {{ form.errors }}
+    </div>
+{% endif %}
 </form>
 {% endblock %}

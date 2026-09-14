@@ -4,8 +4,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Садовые растения и саженцы для вашего сада</h2>
-    {% if user.is_authenticated %}
-    <!-- Кнопка перехода на форму создания товара -->
+    {% if perms.catalog.add_product %}
     <a href="{% url 'catalog:product_create' %}" class="btn btn-success">Добавить товар</a>
     {% endif %}
 </div>
@@ -45,19 +44,43 @@
                        role="button">Подробнее</a>
                     {% endif %}
                 </div>
-                {% if user.is_authenticated %}
-                <div class="p-3 bg-light border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
-                    <div class="btn-group w-100 w-sm-auto">
-                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'catalog:product_update' product.pk %}"
+                {% if user.is_authenticated and perms.catalog.change_product or perms.catalog.can_unpublish_product or user.is_staff %}
+                <div class="p-3 bg-light border-top d-flex flex-wrap justify-content-between align-items-center gap-2 mt-auto">
+                    <p class="card-text m-0">Статус:
+                        <span class="badge {% if product.status == 'active' and product.is_published %}bg-success{% else %}bg-secondary{% endif %}">
+                            {{ product.get_status_display }}
+                        </span>
+                    </p>
+                    <div class="d-flex flex-wrap w-100 gap-2">
+                        <!-- КНОПКА МОДЕРАТОРА: Снять с публикации -->
+                        {% if perms.catalog.can_unpublish_product and product.is_published %}
+                        <form method="post" action="{% url 'catalog:product_unpublish' product.pk %}"
+                              class="d-inline m-0 p-0 flex-fill">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger w-100 py-2 shadow-sm">
+                                Отменить публикацию
+                            </button>
+                        </form>
+                        {% endif %}
+
+                        {% if user == product.owner %}
+                        <a class="btn btn-sm btn-outline-secondary flex-fill d-flex align-items-center justify-content-center py-2"
+                           href="{% url 'catalog:product_update' product.pk %}"
                            role="button">Редактировать</a>
-                        <a class="btn btn-sm btn-outline-danger" href="{% url 'catalog:product_delete' product.pk %}"
+                        {% endif %}
+
+                        {% if user == product.owner %}
+                        <a class="btn btn-sm btn-outline-danger flex-fill d-flex align-items-center justify-content-center py-2"
+                           href="{% url 'catalog:product_delete' product.pk %}"
                            role="button">Удалить</a>
+                        {% endif %}
                     </div>
+                    {% endif %}
                 </div>
-                {% endif %}
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
+
 {% endblock %}
