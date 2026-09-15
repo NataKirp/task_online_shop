@@ -41,6 +41,7 @@ class CategoryProductListView(ListView):
         context['category_name'] = self.category_name
         return context
 
+
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
