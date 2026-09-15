@@ -24,7 +24,19 @@
                         {{ product.description }}
                     </p>
                     <h5 class="text-muted fs-6 mb-1">Характеристики</h5>
-                    <p class="card-text mb-2">Категория: {{ product.category }}</p>
+                    <p class="card-text mb-2">
+                        <span class="text-muted">Категория: </span>
+                        {% if product.category %}</p>
+                    <a href="{% url 'catalog:category_products' category_name=product.category.name %}"
+                       class="text-success fw-medium ms-1"
+                       style="text-decoration: none;"
+                       onmouseover="this.style.textDecoration='underline'"
+                       onmouseout="this.style.textDecoration='none'">
+                        {{ product.category.name }}
+                    </a>
+                    {% else %}
+                    <span class="text-muted small">Без категории</span>
+                    {% endif %}
                 </div>
                 <!-- Нижняя часть с ценой и кнопками (flex-shrink-0 гарантирует, что блок никогда не сожмется и не исчезнет) -->
                 <div class="mt-3 pt-3 border-top flex-shrink-0">

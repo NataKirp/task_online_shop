@@ -7,6 +7,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from catalog.forms import ProductForm
 from catalog.models import Product, Category
+from catalog.services import get_product_by_category
 
 
 class ProductListView(ListView):
@@ -25,6 +26,20 @@ class ProductListView(ListView):
 class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
 
+
+class CategoryProductListView(ListView):
+    template_name = 'catalog/category_products.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        # Получаем имя категории из URL-параметров
+        self.category_name = self.kwargs['category_name']
+        return get_product_by_category(self.category_name)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category_name'] = self.category_name
+        return context
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
