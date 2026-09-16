@@ -94,6 +94,7 @@ class Product(models.Model):
         permissions = [
             ('can_unpublish_product', 'Может отменять публикацию продукта')
         ]
+
     # Переопределяем встроенный метод save
     def save(self, *args, **kwargs):
         # Если статус переключили на "Черновик", насильно гасим флаг публикации
